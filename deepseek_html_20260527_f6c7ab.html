@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>NVFit — Безопасные тренировки</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            background: #000000;
+            color: #FFFFFF;
+            line-height: 1.5;
+            scroll-behavior: smooth;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #1a1a1a; }
+        ::-webkit-scrollbar-thumb { background: #8B5CF6; border-radius: 10px; }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        .header {
+            padding: 20px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            border-bottom: 1px solid rgba(139, 92, 246, 0.3);
+            background: rgba(0,0,0,0.95);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(8px);
+        }
+        .logo {
+            font-size: 32px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #FFFFFF, #A855F7, #8B5CF6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+            cursor: pointer;
+        }
+        .nav {
+            display: flex;
+            gap: 32px;
+            flex-wrap: wrap;
+        }
+        .nav a {
+            text-decoration: none;
+            color: #D1D5DB;
+            font-weight: 500;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+        .nav a:hover {
+            color: #A855F7;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #8B5CF6, #6D28D9);
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 60px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(139, 92, 246, 0.3);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(139, 92, 246, 0.5);
+        }
+        .btn-secondary {
+            background: transparent;
+            color: #A855F7;
+            border: 2px solid #A855F7;
+            padding: 12px 28px;
+            border-radius: 60px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid rgba(139, 92, 246, 0.5);
+            padding: 8px 20px;
+            border-radius: 40px;
+            color: #D1D5DB;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .hero {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 48px;
+            padding: 80px 0 60px;
+        }
+        .hero-content {
+            flex: 1;
+        }
+        .hero-badge {
+            background: rgba(139, 92, 246, 0.15);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            color: #A855F7;
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 60px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+        .hero h1 {
+            font-size: 52px;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+        }
+        .hero h1 span {
+            background: linear-gradient(135deg, #A855F7, #C084FC);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .hero p {
+            font-size: 18px;
+            color: #9CA3AF;
+            margin-bottom: 32px;
+            max-width: 500px;
+        }
+        .section {
+            padding: 80px 0;
+        }
+        .section-title {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+        .grid-3 {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            justify-content: center;
+        }
+        .card {
+            background: rgba(26, 26, 26, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 28px;
+            padding: 32px 24px;
+            flex: 1;
+            min-width: 260px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .card:hover {
+            border-color: #A855F7;
+            transform: translateY(-5px);
+        }
+        .card-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        .purple-glow {
+            background: linear-gradient(135deg, #1E1B4B, #0A0A0A);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 48px;
+            padding: 48px 40px;
+            text-align: center;
+        }
+        .product-card, .trainer-card, .exercise-card {
+            background: #111111;
+            border: 1px solid #2A2A2A;
+            border-radius: 20px;
+            padding: 20px;
+            transition: all 0.3s;
+            flex: 1;
+            min-width: 220px;
+        }
+        .marketplace-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .btn-market {
+            background: #1A1A1A;
+            border: 1px solid #A855F7;
+            color: #A855F7;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 14px 18px;
+            background: #1A1A1A;
+            border: 1px solid #333;
+            border-radius: 16px;
+            color: white;
+            font-size: 16px;
+        }
+        .navbar-bottom {
+            background: #111111;
+            border-radius: 60px;
+            padding: 10px 24px;
+            margin: 20px auto;
+            display: flex;
+            justify-content: space-around;
+            max-width: 500px;
+            border: 1px solid #2A2A2A;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+        .navbar-bottom button {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 8px;
+            color: #D1D5DB;
+            transition: 0.2s;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: #0F0F0F;
+            border: 1px solid #A855F7;
+            border-radius: 32px;
+            padding: 32px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #8B5CF6;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 60px;
+            z-index: 1100;
+            display: none;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+        .workout-player {
+            background: #0A0A0A;
+            border-radius: 32px;
+            padding: 30px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .exercise-timer {
+            font-size: 48px;
+            font-weight: 800;
+            color: #A855F7;
+            margin: 20px 0;
+        }
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid #1F1F1F;
+            color: #6B7280;
+            margin-top: 40px;
+        }
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 36px; }
+            .nav { display: none; }
+            .navbar-bottom { display: flex; }
+        }
+        @media (min-width: 769px) {
+            .navbar-bottom { display: none; }
+        }
+        .injury-level {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+        .level-safe { background: #10B981; color: white; }
+        .level-caution { background: #F59E0B; color: white; }
+        .level-restricted { background: #EF4444; color: white; }
+    </style>
+</head>
+<body>
+
+<header class="header container">
+    <div class="logo" onclick="showSection('home')">NVFIT</div>
+    <div class="nav">
+        <a onclick="showSection('home')">Главная</a>
+        <a onclick="showSection('trainers')">Тренеры</a>
+        <a onclick="showSection('shop')">Магазин</a>
+        <a onclick="showSection('exercises')">Тренировки</a>
+        <a onclick="showSection('profile')">Профиль</a>
+    </div>
+    <div style="display: flex; gap: 12px;">
+        <span id="userNameDisplay" style="color:#A855F7;"></span>
+        <button class="btn-outline" id="authBtn" onclick="showAuthModal()">Войти</button>
+    </div>
+</header>
+
+<main id="mainContent">
+    <!-- Главная -->
+    <div id="homeSection">
+        <div class="container hero">
+            <div class="hero-content">
+                <div class="hero-badge">⚡ Безопасные тренировки</div>
+                <h1>Тренировки, которые <span>учитывают ваши травмы</span></h1>
+                <p>NVFit — персональный фитнес-коуч, который подбирает упражнения с учётом вашего здоровья. Заполните анкету и начните безопасный путь к цели.</p>
+                <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+                    <button class="btn-primary" onclick="showInjuryForm()">🩺 Заполнить анкету травм</button>
+                    <button class="btn-secondary" onclick="startWorkoutSession()">▶ Начать тренировку</button>
+                </div>
+            </div>
+            <div class="hero-content" style="text-align: center;">
+                <div class="purple-glow">
+                    <span style="font-size: 80px;">🛡️</span>
+                    <p style="margin-top: 20px;">Ваша безопасность — наш приоритет</p>
+                    <p id="userSafetyStatus" style="margin-top: 15px; color:#A855F7;"></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="container">
+                <div class="section-title">Почему выбирают NVFit</div>
+                <div class="grid-3">
+                    <div class="card" onclick="showInjuryForm()"><div class="card-icon">🩺</div><h3>Анкета травм</h3><p>Расскажите о своих ограничениях — мы подберём безопасные упражнения</p></div>
+                    <div class="card"><div class="card-icon">🎥</div><h3>Техника безопасности</h3><p>Каждое упражнение с пояснением правильной техники</p></div>
+                    <div class="card"><div class="card-icon">🎙️</div><h3>Голосовые подсказки</h3><p>Контроль техники в реальном времени</p></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container" style="padding: 40px 0;">
+            <h2 style="margin-bottom: 24px;">🤝 Партнёры-тренеры</h2>
+            <div class="grid-3" id="homeTrainers"></div>
+        </div>
+
+        <div class="container" style="padding: 40px 0 80px;">
+            <h2 style="margin-bottom: 24px;">🛒 Спортивное питание</h2>
+            <div class="grid-3" id="homeProducts"></div>
+        </div>
+    </div>
+
+    <!-- Тренеры (без соцсетей) -->
+    <div id="trainersSection" style="display:none;">
+        <div class="container" style="padding: 60px 0;">
+            <h2>🤝 Наши партнёры-тренеры</h2>
+            <div id="allTrainersList" class="grid-3" style="margin-top: 30px;"></div>
+        </div>
+    </div>
+
+    <!-- Магазин -->
+    <div id="shopSection" style="display:none;">
+        <div class="container" style="padding: 60px 0;">
+            <h2>🛒 Магазин спортивного питания</h2>
+            <div id="productsList" class="grid-3" style="margin-top: 30px;"></div>
+        </div>
+    </div>
+
+    <!-- Тренировки с плеером -->
+    <div id="exercisesSection" style="display:none;">
+        <div class="container" style="padding: 60px 0;">
+            <h2>💪 Библиотека упражнений</h2>
+            <div id="userLevelDisplay" style="margin-bottom: 20px;"></div>
+            <div style="display: flex; gap: 12px; flex-wrap: wrap; margin: 30px 0;">
+                <button class="btn-outline" onclick="filterExercises('all')">Все</button>
+                <button class="btn-outline" onclick="filterExercises('fullbody')">Всё тело</button>
+                <button class="btn-outline" onclick="filterExercises('abs')">Пресс</button>
+                <button class="btn-outline" onclick="filterExercises('legs')">Ноги</button>
+                <button class="btn-outline" onclick="filterExercises('arms')">Руки</button>
+                <button class="btn-outline" onclick="filterExercises('back')">Спина</button>
+            </div>
+            <div id="exercisesList" class="grid-3"></div>
+        </div>
+    </div>
+
+    <!-- Профиль -->
+    <div id="profileSection" style="display:none;">
+        <div class="container" style="padding: 60px 0;">
+            <h2>👤 Мой профиль</h2>
+            <div id="profileInfo"></div>
+            <div style="margin-top: 30px;"><button class="btn-outline" onclick="showInjuryForm()">🩺 Заполнить анкету травм</button></div>
+            <button class="btn-outline" onclick="logout()" style="width:100%; margin-top:20px;">🚪 Выйти</button>
+        </div>
+    </div>
+</main>
+
+<footer class="container">
+    <p>© 2025 NVFit — безопасные тренировки с учётом ваших травм.</p>
+</footer>
+
+<div class="navbar-bottom">
+    <button onclick="showSection('home')">🏠</button>
+    <button onclick="showSection('trainers')">🤝</button>
+    <button onclick="showSection('shop')">🛒</button>
+    <button onclick="showSection('exercises')">💪</button>
+    <button onclick="showSection('profile')">👤</button>
+</div>
+
+<div id="toast" class="toast"></div>
+<div id="modal" class="modal" onclick="if(event.target===this)closeModal()">
+    <div class="modal-content" id="modalContent"></div>
+</div>
+
+<script>
+    // ========== ДАННЫЕ ==========
+    let currentUser = JSON.parse(localStorage.getItem('nvfit_currentUser')) || null;
+    let users = JSON.parse(localStorage.getItem('nvfit_users')) || [];
+    
+    // Данные о травмах пользователя
+    let userInjuryData = JSON.parse(localStorage.getItem('nvfit_injuryData')) || null;
+    
+    // Тренеры
+    const trainers = [
+        { name: "Анна Смирнова", spec: "Реабилитация, ЛФК", rating: 4.9, avatar: "🧘" },
+        { name: "Дмитрий Волков", spec: "Силовые тренировки", rating: 4.8, avatar: "🏋️" },
+        { name: "Екатерина Морозова", spec: "Йога, стретчинг", rating: 4.9, avatar: "🧘‍♀️" }
+    ];
+    
+    // Товары
+    const products = [
+        { name: "Whey Gold", price: "от 3490₽", image: "🥛" },
+        { name: "Омега-3", price: "от 1590₽", image: "💊" },
+        { name: "BCAA", price: "от 2190₽", image: "⚡" }
+    ];
+    
+    // Базовые упражнения с уровнями безопасности
+    const allExercises = [
+        { name: "Приседания", type: "legs", muscles: "Квадрицепсы, ягодицы", difficulty: "Средний", safeFor: ["none", "back"] },
+        { name: "Отжимания", type: "arms", muscles: "Грудь, трицепс", difficulty: "Средний", safeFor: ["none", "back"] },
+        { name: "Планка", type: "abs", muscles: "Пресс, кор", difficulty: "Простой", safeFor: ["none", "back", "neck"] },
+        { name: "Выпады", type: "legs", muscles: "Ягодицы, бедра", difficulty: "Средний", safeFor: ["none"] },
+        { name: "Подтягивания", type: "back", muscles: "Широчайшие, бицепс", difficulty: "Сложный", safeFor: ["none"] },
+        { name: "Бёрпи", type: "fullbody", muscles: "Всё тело", difficulty: "Сложный", safeFor: ["none"] },
+        { name: "Скручивания", type: "abs", muscles: "Пресс", difficulty: "Простой", safeFor: ["none", "back"] },
+        { name: "Мостик", type: "back", muscles: "Ягодицы, поясница", difficulty: "Простой", safeFor: ["none", "back", "neck"] },
+        { name: "Подъём ног лёжа", type: "abs", muscles: "Нижний пресс", difficulty: "Средний", safeFor: ["none"] },
+        { name: "Разведение рук с резиной", type: "arms", muscles: "Плечи, спина", difficulty: "Простой", safeFor: ["none", "back", "neck"] }
+    ];
+    
+    let workoutCount = parseInt(localStorage.getItem('nvfit_workouts') || '0');
+    let currentWorkout = null;
+    let workoutInterval = null;
+
+    // ========== ФУНКЦИИ ТРАВМ ==========
+    function getInjuryLevel(injuryData) {
+        if (!injuryData) return { level: "unknown", text: "Не определён", className: "level-caution" };
+        const hasSerious = injuryData.spine || injuryData.jointsSevere;
+        const hasModerate = injuryData.knees || injuryData.shoulders;
+        if (hasSerious) return { level: "restricted", text: "🔴 Ограниченный режим", className: "level-restricted" };
+        if (hasModerate) return { level: "caution", text: "🟡 Требуется осторожность", className: "level-caution" };
+        return { level: "safe", text: "🟢 Полная безопасность", className: "level-safe" };
+    }
+    
+    function getSafeExercises() {
+        if (!userInjuryData) return allExercises;
+        const level = getInjuryLevel(userInjuryData).level;
+        if (level === "safe") return allExercises;
+        if (level === "caution") {
+            return allExercises.filter(ex => ex.safeFor.includes("back") || ex.safeFor.includes("neck"));
+        }
+        return allExercises.filter(ex => ex.safeFor.includes("none"));
+    }
+    
+    function showInjuryForm() {
+        document.getElementById('modalContent').innerHTML = `
+            <h2>🩺 Анкета здоровья</h2>
+            <p style="color:#9CA3AF; margin-bottom:20px;">Расскажите о своих травмах — мы подберём безопасные упражнения</p>
+            <div class="form-group"><label>Есть ли проблемы со спиной?</label><select id="injurySpine"><option value="false">Нет</option><option value="true">Да</option></select></div>
+            <div class="form-group"><label>Проблемы с коленями?</label><select id="injuryKnees"><option value="false">Нет</option><option value="true">Да</option></select></div>
+            <div class="form-group"><label>Проблемы с плечами?</label><select id="injuryShoulders"><option value="false">Нет</option><option value="true">Да</option></select></div>
+            <div class="form-group"><label>Серьёзные травмы суставов?</label><select id="injuryJointsSevere"><option value="false">Нет</option><option value="true">Да</option></select></div>
+            <button class="btn-primary" style="width:100%; margin-top:20px;" onclick="saveInjuryData()">Сохранить и подобрать тренировки</button>
+        `;
+        if (userInjuryData) {
+            setTimeout(() => {
+                if(document.getElementById('injurySpine')) document.getElementById('injurySpine').value = userInjuryData.spine;
+                if(document.getElementById('injuryKnees')) document.getElementById('injuryKnees').value = userInjuryData.knees;
+                if(document.getElementById('injuryShoulders')) document.getElementById('injuryShoulders').value = userInjuryData.shoulders;
+                if(document.getElementById('injuryJointsSevere')) document.getElementById('injuryJointsSevere').value = userInjuryData.jointsSevere;
+            }, 50);
+        }
+        document.getElementById('modal').style.display = 'flex';
+    }
+    
+    function saveInjuryData() {
+        userInjuryData = {
+            spine: document.getElementById('injurySpine').value === 'true',
+            knees: document.getElementById('injuryKnees').value === 'true',
+            shoulders: document.getElementById('injuryShoulders').value === 'true',
+            jointsSevere: document.getElementById('injuryJointsSevere').value === 'true'
+        };
+        localStorage.setItem('nvfit_injuryData', JSON.stringify(userInjuryData));
+        closeModal();
+        showToast('Анкета сохранена! Тренировки подобраны с учётом ваших травм');
+        updateSafetyDisplay();
+        if (document.getElementById('exercisesSection').style.display !== 'none') renderExercises('all');
+    }
+    
+    function updateSafetyDisplay() {
+        const level = getInjuryLevel(userInjuryData);
+        const statusElement = document.getElementById('userSafetyStatus');
+        if (statusElement) statusElement.innerHTML = `<span class="injury-level ${level.className}">${level.text}</span>`;
+        const levelDisplay = document.getElementById('userLevelDisplay');
+        if (levelDisplay) levelDisplay.innerHTML = `<div class="injury-level ${level.className}" style="display:inline-block;">${level.text}</div>`;
+    }
+    
+    // ========== ТРЕНИРОВКИ И ПЛЕЕР ==========
+    function startWorkoutSession() {
+        const safeExercises = getSafeExercises();
+        if (safeExercises.length === 0) {
+            showToast('Нет доступных упражнений. Заполните анкету заново');
+            return;
+        }
+        currentWorkout = { exercises: safeExercises.slice(0, 5), currentIndex: 0 };
+        showWorkoutPlayer();
+    }
+    
+    function showWorkoutPlayer() {
+        const exercise = currentWorkout.exercises[currentWorkout.currentIndex];
+        let timer = 30;
+        document.getElementById('modalContent').innerHTML = `
+            <div class="workout-player">
+                <h2>🏋️ ${exercise.name}</h2>
+                <div style="font-size: 64px; margin: 20px 0;">${exercise.type === 'abs' ? '🔄' : exercise.type === 'legs' ? '🦵' : exercise.type === 'arms' ? '💪' : '🏃'}</div>
+                <p style="color:#9CA3AF;">${exercise.muscles}</p>
+                <div class="exercise-timer" id="workoutTimer">00:30</div>
+                <button class="btn-primary" id="nextExerciseBtn" style="display:none;" onclick="nextExercise()">Следующее упражнение →</button>
+                <button class="btn-secondary" onclick="closeModal()">❌ Завершить</button>
+            </div>
+        `;
+        document.getElementById('modal').style.display = 'flex';
+        startTimer(30);
+    }
+    
+    function startTimer(seconds) {
+        let timeLeft = seconds;
+        const timerElement = document.getElementById('workoutTimer');
+        if (workoutInterval) clearInterval(workoutInterval);
+        workoutInterval = setInterval(() => {
+            if (timeLeft <= 0) {
+                clearInterval(workoutInterval);
+                if (timerElement) timerElement.textContent = "✅ ГОТОВО!";
+                const nextBtn = document.getElementById('nextExerciseBtn');
+                if (nextBtn) nextBtn.style.display = 'block';
+                workoutCount++;
+                localStorage.setItem('nvfit_workouts', workoutCount);
+            } else {
+                timeLeft--;
+                const mins = Math.floor(timeLeft / 60);
+                const secs = timeLeft % 60;
+                if (timerElement) timerElement.textContent = `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
+            }
+        }, 1000);
+    }
+    
+    function nextExercise() {
+        if (workoutInterval) clearInterval(workoutInterval);
+        currentWorkout.currentIndex++;
+        if (currentWorkout.currentIndex >= currentWorkout.exercises.length) {
+            closeModal();
+            showToast(`🎉 Тренировка завершена! +1 тренировка. Всего: ${workoutCount}`);
+        } else {
+            showWorkoutPlayer();
+        }
+    }
+    
+    // ========== АВТОРИЗАЦИЯ ==========
+    function showAuthModal() {
+        document.getElementById('modalContent').innerHTML = `
+            <h2>Добро пожаловать</h2>
+            <div style="margin: 20px 0;">
+                <button class="btn-primary" style="width:100%; margin-bottom:10px;" onclick="showLogin()">Вход</button>
+                <button class="btn-secondary" style="width:100%;" onclick="showRegister()">Регистрация</button>
+            </div>
+        `;
+        document.getElementById('modal').style.display = 'flex';
+    }
+    
+    function showLogin() {
+        document.getElementById('modalContent').innerHTML = `
+            <h2>Вход</h2>
+            <div class="form-group"><input type="email" id="loginEmail" placeholder="Email"></div>
+            <div class="form-group"><input type="password" id="loginPassword" placeholder="Пароль"></div>
+            <button class="btn-primary" style="width:100%;" onclick="login()">Войти</button>
+            <p style="margin-top:15px; text-align:center;"><a onclick="showRegister()" style="color:#A855F7; cursor:pointer;">Регистрация</a></p>
+        `;
+    }
+    
+    function showRegister() {
+        document.getElementById('modalContent').innerHTML = `
+            <h2>Регистрация</h2>
+            <div class="form-group"><input type="text" id="regName" placeholder="Имя"></div>
+            <div class="form-group"><input type="email" id="regEmail" placeholder="Email"></div>
+            <div class="form-group"><input type="password" id="regPassword" placeholder="Пароль"></div>
+            <button class="btn-primary" style="width:100%;" onclick="register()">Зарегистрироваться</button>
+            <p style="margin-top:15px; text-align:center;"><a onclick="showLogin()" style="color:#A855F7; cursor:pointer;">Уже есть аккаунт</a></p>
+        `;
+    }
+    
+    function register() {
+        const name = document.getElementById('regName').value;
+        const email = document.getElementById('regEmail').value;
+        const password = document.getElementById('regPassword').value;
+        if (!name || !email || !password) { showToast('Заполните все поля'); return; }
+        if (users.find(u => u.email === email)) { showToast('Email уже существует'); return; }
+        currentUser = { id: Date.now(), name, email, password };
+        users.push(currentUser);
+        localStorage.setItem('nvfit_users', JSON.stringify(users));
+        localStorage.setItem('nvfit_currentUser', JSON.stringify(currentUser));
+        closeModal();
+        updateUI();
+        showToast(`Добро пожаловать, ${name}! Заполните анкету травм`);
+        showInjuryForm();
+    }
+    
+    function login() {
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
+        const user = users.find(u => u.email === email && u.password === password);
+        if (user) {
+            currentUser = user;
+            localStorage.setItem('nvfit_currentUser', JSON.stringify(currentUser));
+            closeModal();
+            updateUI();
+            showToast(`С возвращением, ${user.name}!`);
+        } else { showToast('Неверный email или пароль'); }
+    }
+    
+    function logout() {
+        currentUser = null;
+        localStorage.removeItem('nvfit_currentUser');
+        updateUI();
+        showSection('home');
+        showToast('Вы вышли');
+    }
+    
+    // ========== ОТОБРАЖЕНИЕ ==========
+    function updateUI() {
+        if (currentUser) {
+            document.getElementById('userNameDisplay').textContent = currentUser.name;
+            document.getElementById('authBtn').textContent = 'Профиль';
+            document.getElementById('authBtn').onclick = () => showSection('profile');
+        } else {
+            document.getElementById('userNameDisplay').textContent = '';
+            document.getElementById('authBtn').textContent = 'Войти';
+            document.getElementById('authBtn').onclick = () => showAuthModal();
+        }
+        updateSafetyDisplay();
+    }
+    
+    function renderProfile() {
+        if (!currentUser) {
+            document.getElementById('profileInfo').innerHTML = '<p>Войдите в аккаунт</p>';
+            return;
+        }
+        const level = getInjuryLevel(userInjuryData);
+        document.getElementById('profileInfo').innerHTML = `
+            <div style="background:#111; padding:20px; border-radius:20px;">
+                <p><strong>👤 Имя:</strong> ${currentUser.name}</p>
+                <p><strong>📧 Email:</strong> ${currentUser.email}</p>
+                <p><strong>🏆 Тренировок:</strong> ${workoutCount}</p>
+                <p><strong>🩺 Статус безопасности:</strong> <span class="injury-level ${level.className}">${level.text}</span></p>
+            </div>
+        `;
+    }
+    
+    function showSection(section) {
+        document.getElementById('homeSection').style.display = section === 'home' ? 'block' : 'none';
+        document.getElementById('trainersSection').style.display = section === 'trainers' ? 'block' : 'none';
+        document.getElementById('shopSection').style.display = section === 'shop' ? 'block' : 'none';
+        document.getElementById('exercisesSection').style.display = section === 'exercises' ? 'block' : 'none';
+        document.getElementById('profileSection').style.display = section === 'profile' ? 'block' : 'none';
+        if (section === 'trainers') renderTrainers();
+        if (section === 'shop') renderProducts();
+        if (section === 'exercises') renderExercises('all');
+        if (section === 'profile') renderProfile();
+    }
+    
+    function renderTrainers() {
+        const html = trainers.map(t => `<div class="trainer-card"><div style="font-size:48px;">${t.avatar}</div><h3>${t.name}</h3><p>⭐ ${t.rating} • ${t.spec}</p><p style="color:#A855F7;">Онлайн-консультации</p></div>`).join('');
+        document.getElementById('allTrainersList').innerHTML = html;
+        document.getElementById('homeTrainers').innerHTML = trainers.slice(0,3).map(t => `<div class="trainer-card"><div style="font-size:40px;">${t.avatar}</div><h3>${t.name}</h3><p>⭐ ${t.rating}</p></div>`).join('');
+    }
+    
+    function renderProducts() {
+        const html = products.map(p => `<div class="product-card"><div style="font-size:48px;">${p.image}</div><h3>${p.name}</h3><p class="price">${p.price}</p><div class="marketplace-buttons"><button class="btn-market" onclick="showToast('Переход на маркетплейс')">Купить</button></div></div>`).join('');
+        document.getElementById('productsList').innerHTML = html;
+        document.getElementById('homeProducts').innerHTML = products.slice(0,3).map(p => `<div class="product-card"><div style="font-size:32px;">${p.image}</div><h3>${p.name}</h3><p class="price">${p.price}</p><button class="btn-market" onclick="showToast('Переход на маркетплейс')">Купить</button></div>`).join('');
+    }
+    
+    function renderExercises(type) {
+        const safeExercises = getSafeExercises();
+        let filtered = type === 'all' ? safeExercises : safeExercises.filter(e => e.type === type);
+        document.getElementById('exercisesList').innerHTML = filtered.map(e => `
+            <div class="exercise-card">
+                <div style="font-size:32px;">${e.type === 'abs' ? '🔄' : e.type === 'legs' ? '🦵' : e.type === 'arms' ? '💪' : '🏃'}</div>
+                <h3>${e.name}</h3>
+                <p style="color:#9CA3AF;">${e.muscles}</p>
+                <p style="color:#A855F7;">${e.difficulty}</p>
+                <button class="btn-primary" style="margin-top:10px; padding:8px;" onclick="startSingleExercise('${e.name}')">▶ Выполнить</button>
+            </div>
+        `).join('');
+    }
+    
+    function startSingleExercise(name) {
+        const exercise = getSafeExercises().find(e => e.name === name);
+        if (!exercise) return;
+        currentWorkout = { exercises: [exercise], currentIndex: 0 };
+        showWorkoutPlayer();
+    }
+    
+    function filterExercises(type) { renderExercises(type); }
+    function closeModal() { 
+        if (workoutInterval) clearInterval(workoutInterval);
+        document.getElementById('modal').style.display = 'none'; 
+    }
+    function showToast(msg) {
+        const toast = document.getElementById('toast');
+        toast.textContent = msg;
+        toast.style.display = 'block';
+        setTimeout(() => toast.style.display = 'none', 2000);
+    }
+    
+    // Инициализация
+    renderTrainers();
+    renderProducts();
+    if (localStorage.getItem('nvfit_injuryData')) userInjuryData = JSON.parse(localStorage.getItem('nvfit_injuryData'));
+    updateUI();
+    showSection('home');
+</script>
+</body>
+</html>
